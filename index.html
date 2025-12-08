@@ -16,7 +16,7 @@
         display: grid;
         grid-template-columns: 30% 70%;
         height: 100%;
-        margin: 1rem, 1rem, 1rem,1rem ;
+        margin: 1rem, 1rem, 1rem, 1rem;
       }
 
       /* LEFT SIDE (full height) */
@@ -33,8 +33,29 @@
         height: 30%;
       }
       .livesHolder progress {
+        height: 10rem;
+      }
+      .progressBar {
         width: 100%;
-        height: 40%;
+      }
+      .vertical-progress-container {
+        width: 30px; /* Set the width of the progress bar */
+        height: 200px; /* Set the height of the progress bar container */
+        background-color: #e0e0e0; /* Background color of the track */
+        border-radius: 5px; /* Optional: Rounded corners */
+        position: relative; /* Essential for positioning the inner bar */
+        overflow: hidden; /* Ensures the inner bar stays within the container */
+      }
+
+      .vertical-progress-bar {
+        width: 100%; /* Occupy the full width of the container */
+        height: 0%; /* Initial height, will be updated by JavaScript or CSS */
+        background-color: #4caf50; /* Color of the progress indicator */
+        border-radius: 5px; /* Optional: Rounded corners */
+        position: absolute; /* Position relative to the container */
+        bottom: 0; /* Starts filling from the bottom */
+        left: 0;
+        transition: height 0.5s ease-in-out; /* Smooth transition for height changes */
       }
 
       /* RIGHT SIDE (buttons fill full area) */
@@ -69,21 +90,47 @@
     <div class="gameContaier">
       <!-- LEFT COLUMN -->
       <div class="livesHolder">
-        <button style="rotate: 180deg">Deal dmg to player 1</button>
-        <div class="progressBar"><progress max="10" value="5"></progress></div>
-        <button>Deal dmg to player 2</button>
+        <button style="rotate: 180deg" onclick="dealDmgToPlayerOne()">
+          Deal dmg to player 1
+        </button>
+        <div class="vertical-progress-container">
+          <div class="vertical-progress-bar"></div>
+        </div>
+        <button onclick="dealDmgToPlayerTwo()">Deal dmg to player 2</button>
       </div>
 
       <!-- RIGHT COLUMN -->
       <div class="items">
         <div>
           <div class="buttonHolder">
-            <button style="rotate: 180deg; border: 1px solid greenyellow;" onclick="playerOneAddBlood()">+ Blood🩸</button>
-            <button style="rotate: 180deg; border: 1px solid greenyellow;" onclick="playerOneAddBones()">+ Bones🦴</button>
-            <button style="rotate: 180deg; border: 1px solid red;" onclick="playerOneSubtractBlood()">- Blood🩸</button>
-            <button style="rotate: 180deg; border: 1px solid red;" onclick="playerOneSubtractBones()">- Bones🦴</button>
+            <button
+              style="rotate: 180deg; border: 1px solid greenyellow"
+              onclick="playerOneAddBlood()"
+            >
+              + Blood🩸
+            </button>
+            <button
+              style="rotate: 180deg; border: 1px solid greenyellow"
+              onclick="playerOneAddBones()"
+            >
+              + Bones🦴
+            </button>
+            <button
+              style="rotate: 180deg; border: 1px solid red"
+              onclick="playerOneSubtractBlood()"
+            >
+              - Blood🩸
+            </button>
+            <button
+              style="rotate: 180deg; border: 1px solid red"
+              onclick="playerOneSubtractBones()"
+            >
+              - Bones🦴
+            </button>
           </div>
-          <div id="statsPlayer1" style="rotate: 180deg">Bones: 00 | Blood: 00</div>
+          <div id="statsPlayer1" style="rotate: 180deg">
+            Bones: 00 | Blood: 00
+          </div>
           <div style="rotate: 180deg">Player 1</div>
         </div>
         <hr />
@@ -91,61 +138,98 @@
           <div>Player 2</div>
           <div id="statsPlayer2">Bones: 00 | Blood: 00</div>
           <div class="buttonHolder">
-            <button style="border: 1px solid red;" onclick="playerTwoSubtractBlood()">- Blood🩸</button>
-            <button style="border: 1px solid red;" onclick="playerTwoSubtractBones()">- Bones🦴</button>
-            <button style="border: 1px solid greenyellow;" onclick="playerTwoAddBlood()">+ Blood🩸</button>
-            <button style="border: 1px solid greenyellow;" onclick="playerTwoAddBones()">+ Bones🦴</button>
+            <button
+              style="border: 1px solid red"
+              onclick="playerTwoSubtractBlood()"
+            >
+              - Blood🩸
+            </button>
+            <button
+              style="border: 1px solid red"
+              onclick="playerTwoSubtractBones()"
+            >
+              - Bones🦴
+            </button>
+            <button
+              style="border: 1px solid greenyellow"
+              onclick="playerTwoAddBlood()"
+            >
+              + Blood🩸
+            </button>
+            <button
+              style="border: 1px solid greenyellow"
+              onclick="playerTwoAddBones()"
+            >
+              + Bones🦴
+            </button>
           </div>
         </div>
       </div>
     </div>
     <script>
-      const playerOneStats = document.getElementById("statsPlayer1")
-      const playerTwoStats = document.getElementById("statsPlayer2")
-      let playerOneBlood = 0
-      let playerOneBones = 0
-      let playerTwoBlood = 0
-      let playerTwoBones = 0
+      const playerOneStats = document.getElementById("statsPlayer1");
+      const playerTwoStats = document.getElementById("statsPlayer2");
+      let playerOneBlood = 0;
+      let playerOneBones = 0;
+      let playerTwoBlood = 0;
+      let playerTwoBones = 0;
+      let health = 50;
 
-      function playerOneAddBlood(){
-        playerOneBlood= playerOneBlood + 1
-        playerOneStats.innerHTML = `Bones: ${playerOneBones} | Blood: ${playerOneBlood}`
+      function playerOneAddBlood() {
+        playerOneBlood = playerOneBlood + 1;
+        playerOneStats.innerHTML = `Bones: ${playerOneBones} | Blood: ${playerOneBlood}`;
       }
 
-      function playerOneSubtractBlood(){
-        playerOneBlood= playerOneBlood - 1
-        playerOneStats.innerHTML = `Bones: ${playerOneBones} | Blood: ${playerOneBlood}`
+      function playerOneSubtractBlood() {
+        playerOneBlood = playerOneBlood - 1;
+        playerOneStats.innerHTML = `Bones: ${playerOneBones} | Blood: ${playerOneBlood}`;
       }
 
-      function playerOneAddBones(){
-        playerOneBones= playerOneBones + 1
-        playerOneStats.innerHTML = `Bones: ${playerOneBones} | Blood: ${playerOneBlood}`
+      function playerOneAddBones() {
+        playerOneBones = playerOneBones + 1;
+        playerOneStats.innerHTML = `Bones: ${playerOneBones} | Blood: ${playerOneBlood}`;
       }
 
-      function playerOneSubtractBones(){
-        playerOneBones= playerOneBones - 1
-        playerOneStats.innerHTML = `Bones: ${playerOneBones} | Blood: ${playerOneBlood}`
+      function playerOneSubtractBones() {
+        playerOneBones = playerOneBones - 1;
+        playerOneStats.innerHTML = `Bones: ${playerOneBones} | Blood: ${playerOneBlood}`;
       }
 
-
-      function playerTwoAddBlood(){
-        playerTwoBlood= playerTwoBlood + 1
-        playerTwoStats.innerHTML = `Bones: ${playerTwoBones} | Blood: ${playerTwoBlood}`
+      function playerTwoAddBlood() {
+        playerTwoBlood = playerTwoBlood + 1;
+        playerTwoStats.innerHTML = `Bones: ${playerTwoBones} | Blood: ${playerTwoBlood}`;
       }
 
-      function playerTwoSubtractBlood(){
-        playerTwoBlood= playerTwoBlood - 1
-        playerTwoStats.innerHTML = `Bones: ${playerTwoBones} | Blood: ${playerTwoBlood}`
+      function playerTwoSubtractBlood() {
+        playerTwoBlood = playerTwoBlood - 1;
+        playerTwoStats.innerHTML = `Bones: ${playerTwoBones} | Blood: ${playerTwoBlood}`;
       }
 
-      function playerTwoAddBones(){
-        playerTwoBones= playerTwoBones + 1
-        playerTwoStats.innerHTML = `Bones: ${playerTwoBones} | Blood: ${playerTwoBlood}`
-      }      
+      function playerTwoAddBones() {
+        playerTwoBones = playerTwoBones + 1;
+        playerTwoStats.innerHTML = `Bones: ${playerTwoBones} | Blood: ${playerTwoBlood}`;
+      }
 
-      function playerTwoSubtractBones(){
-        playerTwoBones= playerTwoBones - 1
-        playerTwoStats.innerHTML = `Bones: ${playerTwoBones} | Blood: ${playerTwoBlood}`
+      function playerTwoSubtractBones() {
+        playerTwoBones = playerTwoBones - 1;
+        playerTwoStats.innerHTML = `Bones: ${playerTwoBones} | Blood: ${playerTwoBlood}`;
+      }
+
+      function updateProgressBar(percentage) {
+        const progressBar = document.querySelector(".vertical-progress-bar");
+        progressBar.style.height = `${percentage}%`;
+      }
+      updateProgressBar(health);
+
+      function dealDmgToPlayerOne() {
+        health = health - 10;
+        console.log(health);
+        updateProgressBar(health);
+      }
+      function dealDmgToPlayerTwo() {
+        health = health + 10;
+        console.log(health);
+        updateProgressBar(health);
       }
     </script>
   </body>
